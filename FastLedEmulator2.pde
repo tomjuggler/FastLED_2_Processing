@@ -66,8 +66,8 @@ boolean firstContact = false;  // Whether we've heard from the microcontroller. 
 int stageMin = 140;            // Minimum stage size.
 int stageW = stageMin;         // Initial stage width for draw area.
 int stageH = stageMin;         // Initial stage height for draw area.
-int pixelSize = 20;            // Width and height of a pixel.
-int offset = 30;               // Pixel spacing (measured from pixel center to center).
+int pixelSize = 10;            // Width and height of a pixel.
+int offset = 10;               // Pixel spacing (measured from pixel center to center).
 float xpos, ypos;              // X and Y pixel position in the draw area.
 float dx,dy = 0;               // X and Y delta from the stage center in circular layouts.
 int cCount = 0;                // Used to keep track of column while drawing pixel matrix.
@@ -76,7 +76,7 @@ float r = 1;                   // Radius for circular layout.  Size is calculate
 float degrees = 0;             // Degrees to rotate pixel boarder when drawing circular layout.
 int dir = 1;                   // Assigns draw direction a value.  [1=Forward, -1=Reverse]
 int dirM = 1;                  // Assigns value to matrix scan start position.  [1=Top, -1=Bottom]
-int bgcolor = 42;              // Stage background color.
+int bgcolor = 0;              // Stage background color.
 int redChan;                   // Pixel's red value (0-255) 
 int greenChan;                 // Pixel's green value (0-255)
 int blueChan;                  // Pixel's blue value (0-255)
@@ -219,6 +219,7 @@ void draw() {
     }//end matrix layout
     
     if (layout == "P") {  // Draw POV layout.
+    /* TRYING NO BORDER....
       //if (path == "S") {  // Path type serpentine.
       //}
       int totalPixels = NUM_LEDS*numberFlashes;
@@ -240,6 +241,7 @@ void draw() {
           }
         }
       }
+      */
     }//end POV layout
 
   }//end conditional check
@@ -420,8 +422,8 @@ void serialEvent(Serial myPort) {
         
         if (layout == "P") {
           int totalPixels = NUM_LEDS*numberFlashes; //need to make totalPixels global var...
-          xpos = (float(stageW)/2.0) - (dir*float((numberFlashes-1))/2.0*offset) + (dir*offset*cCount);
-          ypos = (float(stageH)/2.0) - (dirM*float((NUM_LEDS-1))/2.0*offset) + (dirM*offset*rCount);
+          ypos = (float(stageW)/2.0) - (dir*float((numberFlashes-1))/2.0*offset) + (dir*offset*cCount);
+          xpos = (float(stageH)/2.0) - (dirM*float((NUM_LEDS-1))/2.0*offset) + (dirM*offset*rCount);
           //print("    cCount: " + cCount + "    rCount: " + rCount);
           //print("    "+(cCount+1)+"+"+(rCount*numberColumns)+"="+(cCount+1+(rCount*numberColumns)));
           //println("    xpos: " + xpos + "    ypos: " + ypos);
@@ -438,7 +440,8 @@ void serialEvent(Serial myPort) {
         }
 
         // Draw the pixel!
-        ellipse(xpos,ypos,pixelSize,pixelSize);  // center x, center y, width, height
+        rect(xpos,ypos,pixelSize,pixelSize);  // center x, center y, width, height
+        //ellipse(xpos,ypos,pixelSize,pixelSize);  // center x, center y, width, height
       
       }//end of looping over pixels
       serialCount = 0;  // Reset serial count before receiving more data.
