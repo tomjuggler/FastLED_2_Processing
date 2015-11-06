@@ -66,15 +66,15 @@ boolean firstContact = false;  // Whether we've heard from the microcontroller. 
 int stageMin = 140;            // Minimum stage size.
 int stageW = stageMin;         // Initial stage width for draw area.
 int stageH = stageMin;         // Initial stage height for draw area.
-int pixelSize = 10;            // Width and height of a pixel.
-int offset = 10;               // Pixel spacing (measured from pixel center to center).
+int pixelSize = 18;            // Width and height of a pixel.
+int offset = 18;               // Pixel spacing (measured from pixel center to center).
 float xpos, ypos;              // X and Y pixel position in the draw area.
 float dx,dy = 0;               // X and Y delta from the stage center in circular layouts.
 int cCount = 0;                // Used to keep track of column while drawing pixel matrix.
 int rCount = 0;                // Used to keep track of row while drawing pixel matrix.
 float r = 1;                   // Radius for circular layout.  Size is calculated elsewhere.
 float degrees = 0;             // Degrees to rotate pixel boarder when drawing circular layout.
-int dir = 1;                   // Assigns draw direction a value.  [1=Forward, -1=Reverse]
+int dir = -1;                   // Assigns draw direction a value.  [1=Forward, -1=Reverse]
 int dirM = 1;                  // Assigns value to matrix scan start position.  [1=Top, -1=Bottom]
 int bgcolor = 0;              // Stage background color.
 int redChan;                   // Pixel's red value (0-255) 
