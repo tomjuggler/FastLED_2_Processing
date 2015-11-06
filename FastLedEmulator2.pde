@@ -31,7 +31,7 @@ import processing.serial.*;
 //==============================================================================
 // *** User variables.  Change as needed to match your setup. ***
 int      NUM_LEDS = 37;     // Number of pixels in strip.
-String     layout = "V";    // Pixel layout: [H]orizontal, [V]ertical, [M]atrix, [C]ircular, or[P]OV.
+String     layout = "P";    // Pixel layout: [H]orizontal, [V]ertical, [M]atrix, [C]ircular, or[P]OV.
 String  direction = "F";    // Numbering direction: [F]orward or [R]everse.
 
 // *** Additional variables for Matrix layout only. ***
@@ -217,6 +217,30 @@ void draw() {
         }
       }
     }//end matrix layout
+    
+    if (layout == "P") {  // Draw POV layout.
+      //if (path == "S") {  // Path type serpentine.
+      //}
+      int totalPixels = NUM_LEDS*numberFlashes;
+      //for (int j=0; j<NUM_LEDS; j++){  // rows
+      for (int j=0; j<totalPixels; j++){  // rows
+        ypos = (float(stageH)/2.0) - (dirM*float((NUM_LEDS-1))/2.0*offset) + (dirM * offset * j);
+        for (int i=0; i<numberFlashes; i++){  // columns
+          xpos = (float(stageW)/2.0) - (dir*float((numberFlashes-1))/2.0*offset) + (dir * offset * i);
+          //print("i: " + i + " j:" + j + "    " + (i+1 + (j*numberColumns)));
+          //println("    xpos: " + xpos + "    ypos: " + ypos);
+          if ((i+1+(j*numberFlashes)) <= totalPixels) {  // If matrix is larger then NUM_LEDS, only draw actual pixels.
+            colorMode(HSB, 255);  // Specify color mode, using range from 0-255.
+            fill(0,0,boarderColor);  // HSB mode = White part of pixel
+            rect(xpos,ypos,pixelSize+3,pixelSize+3,3);  // center x, center y, width, height, corner radius
+            fill(0,255,25);  // HSB mode
+            ellipse(xpos,ypos,pixelSize,pixelSize);  // center x, center y, width, height
+            boarderColor -= 10;  // Darken pixel boarder color
+            if (boarderColor < 200) {boarderColor = 180;}  // Clamp minimum boarder color
+          }
+        }
+      }
+    }//end POV layout
 
   }//end conditional check
 }//end draw() section
@@ -301,6 +325,9 @@ void serialEvent(Serial myPort) {
               println("]erpentine.  *** SERPENTINE path is not available yet! *** Processing halted. ***");
               exit();  // Exit the program.
             }
+          }
+          if (layout == "P"){
+            println("get ready for POV!");
           }
 
           if (direction == "F") {
@@ -388,6 +415,25 @@ void serialEvent(Serial myPort) {
             cCount = 0;  // Reset column counter.
             rCount++;  // Increment to move to next row.
             if (rCount == numberRows) { rCount = 0; }  // Reset to zero.
+          }
+        }
+        
+        if (layout == "P") {
+          int totalPixels = NUM_LEDS*numberFlashes; //need to make totalPixels global var...
+          xpos = (float(stageW)/2.0) - (dir*float((numberFlashes-1))/2.0*offset) + (dir*offset*cCount);
+          ypos = (float(stageH)/2.0) - (dirM*float((NUM_LEDS-1))/2.0*offset) + (dirM*offset*rCount);
+          //print("    cCount: " + cCount + "    rCount: " + rCount);
+          //print("    "+(cCount+1)+"+"+(rCount*numberColumns)+"="+(cCount+1+(rCount*numberColumns)));
+          //println("    xpos: " + xpos + "    ypos: " + ypos);
+          cCount++;  // Increment column counter.
+          if ((cCount+(rCount*numberFlashes)) == totalPixels) {  // If matrix is larger then NUM_LEDS, only draw actual pixels.
+            cCount = 0;
+            rCount = 0;
+          }
+          else if (cCount == (numberFlashes)) {
+            cCount = 0;  // Reset column counter.
+            rCount++;  // Increment to move to next row.
+            if (rCount == NUM_LEDS) { rCount = 0; }  // Reset to zero.
           }
         }
 
