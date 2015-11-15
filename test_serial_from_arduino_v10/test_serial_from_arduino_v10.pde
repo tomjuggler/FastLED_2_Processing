@@ -93,8 +93,8 @@ void setup() {
   println (" ");
 
   // Serial port to be used.  Change number in [brackets] as needed.
-  String portName = "/dev/ttyACM0";
-  //String portName = Serial.list()[0]; // <--- *port number*
+  //String portName = "/dev/ttyACM0";
+  String portName = Serial.list()[0]; // <--- *port number*
   // - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - -
 
 
