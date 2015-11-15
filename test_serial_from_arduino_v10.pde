@@ -30,13 +30,13 @@ import processing.serial.*;
 //------------------------------------------------------------------------------
 //==============================================================================
 // *** User variables.  Change as needed to match your setup. ***
-int      NUM_LEDS = 12;     // Number of pixels in strip.
-String     layout = "H";    // Pixel layout: [H]orizontal, [V]ertical, [M]atrix, or [C]ircular.
+int      NUM_LEDS = 37;     // Number of pixels in strip.
+String     layout = "P";    // Pixel layout: [H]orizontal, [V]ertical, [M]atrix, [C]ircular, or[P]OV.
 String  direction = "F";    // Numbering direction: [F]orward or [R]everse.
 
 // *** Additional variables for Matrix layout only. ***
-int numberColumns = 4;      // Number of pixels across.
-int    numberRows = 3;      // Number of pixels vertically.
+int numberColumns = 37;      // Number of pixels across.
+int    numberRows = 1;      // Number of pixels vertically.
 String  scanStart = "T";    // Matrix scan starts from: [T]op or [B]ottom.
 String       path = "Z";    // Path type: [Z]igzag or [S]erpintine.
 
@@ -44,6 +44,9 @@ String       path = "Z";    // Path type: [Z]igzag or [S]erpintine.
 boolean testing = false;  // Testing mode, shows pixelNumber and color data. [default: false]
 boolean testing_verbose = false;  // Verbose detail. Shows incoming data.  [default: false]
 boolean checkNUM_LEDS = true;  // Force check of NUM_LEDS vs pixels from MCU. [default: true]
+
+// *** Additional variables for POV layout only. ***
+int numberFlashes = 37;
 
 // End of user variables.
 //==============================================================================
@@ -63,17 +66,17 @@ boolean firstContact = false;  // Whether we've heard from the microcontroller. 
 int stageMin = 140;            // Minimum stage size.
 int stageW = stageMin;         // Initial stage width for draw area.
 int stageH = stageMin;         // Initial stage height for draw area.
-int pixelSize = 20;            // Width and height of a pixel.
-int offset = 30;               // Pixel spacing (measured from pixel center to center).
+int pixelSize = 18;            // Width and height of a pixel.
+int offset = 18;               // Pixel spacing (measured from pixel center to center).
 float xpos, ypos;              // X and Y pixel position in the draw area.
 float dx,dy = 0;               // X and Y delta from the stage center in circular layouts.
 int cCount = 0;                // Used to keep track of column while drawing pixel matrix.
 int rCount = 0;                // Used to keep track of row while drawing pixel matrix.
 float r = 1;                   // Radius for circular layout.  Size is calculated elsewhere.
 float degrees = 0;             // Degrees to rotate pixel boarder when drawing circular layout.
-int dir = 1;                   // Assigns draw direction a value.  [1=Forward, -1=Reverse]
+int dir = -1;                   // Assigns draw direction a value.  [1=Forward, -1=Reverse]
 int dirM = 1;                  // Assigns value to matrix scan start position.  [1=Top, -1=Bottom]
-int bgcolor = 42;              // Stage background color.
+int bgcolor = 0;              // Stage background color.
 int redChan;                   // Pixel's red value (0-255) 
 int greenChan;                 // Pixel's green value (0-255)
 int blueChan;                  // Pixel's blue value (0-255)
@@ -90,7 +93,8 @@ void setup() {
   println (" ");
 
   // Serial port to be used.  Change number in [brackets] as needed.
-  String portName = Serial.list()[0]; // <--- *port number*
+  String portName = "/dev/ttyACM0";
+  //String portName = Serial.list()[0]; // <--- *port number*
   // - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - -
 
 
@@ -112,6 +116,10 @@ void setup() {
   if (layout == "M") {
     stageW  = (numberColumns + 1) * offset;  // width of stage draw area.
     stageH = (numberRows + 1) * offset;  // height of stage draw area.
+  }
+  if (layout == "P") {
+    stageW  = (numberFlashes + 1) * offset;  // width of stage draw area.
+    stageH = (NUM_LEDS + 1) * offset;  // height of stage draw area.
   }
   if (stageW < stageMin) { stageW = stageMin; }  // Force at least a minimum stage width.
   if (stageH < stageMin) { stageH = stageMin; }  // Force at least a minimum stage height.
@@ -209,6 +217,32 @@ void draw() {
         }
       }
     }//end matrix layout
+    
+    if (layout == "P") {  // Draw POV layout.
+    /* TRYING NO BORDER....
+      //if (path == "S") {  // Path type serpentine.
+      //}
+      int totalPixels = NUM_LEDS*numberFlashes;
+      //for (int j=0; j<NUM_LEDS; j++){  // rows
+      for (int j=0; j<totalPixels; j++){  // rows
+        ypos = (float(stageH)/2.0) - (dirM*float((NUM_LEDS-1))/2.0*offset) + (dirM * offset * j);
+        for (int i=0; i<numberFlashes; i++){  // columns
+          xpos = (float(stageW)/2.0) - (dir*float((numberFlashes-1))/2.0*offset) + (dir * offset * i);
+          //print("i: " + i + " j:" + j + "    " + (i+1 + (j*numberColumns)));
+          //println("    xpos: " + xpos + "    ypos: " + ypos);
+          if ((i+1+(j*numberFlashes)) <= totalPixels) {  // If matrix is larger then NUM_LEDS, only draw actual pixels.
+            colorMode(HSB, 255);  // Specify color mode, using range from 0-255.
+            fill(0,0,boarderColor);  // HSB mode = White part of pixel
+            rect(xpos,ypos,pixelSize+3,pixelSize+3,3);  // center x, center y, width, height, corner radius
+            fill(0,255,25);  // HSB mode
+            ellipse(xpos,ypos,pixelSize,pixelSize);  // center x, center y, width, height
+            boarderColor -= 10;  // Darken pixel boarder color
+            if (boarderColor < 200) {boarderColor = 180;}  // Clamp minimum boarder color
+          }
+        }
+      }
+      */
+    }//end POV layout
 
   }//end conditional check
 }//end draw() section
@@ -293,6 +327,9 @@ void serialEvent(Serial myPort) {
               println("]erpentine.  *** SERPENTINE path is not available yet! *** Processing halted. ***");
               exit();  // Exit the program.
             }
+          }
+          if (layout == "P"){
+            println("get ready for POV!");
           }
 
           if (direction == "F") {
@@ -382,9 +419,29 @@ void serialEvent(Serial myPort) {
             if (rCount == numberRows) { rCount = 0; }  // Reset to zero.
           }
         }
+        
+        if (layout == "P") {
+          int totalPixels = NUM_LEDS*numberFlashes; //need to make totalPixels global var...
+          ypos = (float(stageW)/2.0) - (dir*float((numberFlashes-1))/2.0*offset) + (dir*offset*cCount);
+          xpos = (float(stageH)/2.0) - (dirM*float((NUM_LEDS-1))/2.0*offset) + (dirM*offset*rCount);
+          //print("    cCount: " + cCount + "    rCount: " + rCount);
+          //print("    "+(cCount+1)+"+"+(rCount*numberColumns)+"="+(cCount+1+(rCount*numberColumns)));
+          //println("    xpos: " + xpos + "    ypos: " + ypos);
+          cCount++;  // Increment column counter.
+          if ((cCount+(rCount*numberFlashes)) == totalPixels) {  // If matrix is larger then NUM_LEDS, only draw actual pixels.
+            cCount = 0;
+            rCount = 0;
+          }
+          else if (cCount == (numberFlashes)) {
+            cCount = 0;  // Reset column counter.
+            rCount++;  // Increment to move to next row.
+            if (rCount == NUM_LEDS) { rCount = 0; }  // Reset to zero.
+          }
+        }
 
         // Draw the pixel!
-        ellipse(xpos,ypos,pixelSize,pixelSize);  // center x, center y, width, height
+        rect(xpos,ypos,pixelSize,pixelSize);  // center x, center y, width, height
+        //ellipse(xpos,ypos,pixelSize,pixelSize);  // center x, center y, width, height
       
       }//end of looping over pixels
       serialCount = 0;  // Reset serial count before receiving more data.
@@ -412,3 +469,4 @@ TODO/ideas:
   - 
   
 ------------------------------------------------------------------------------*/
+
