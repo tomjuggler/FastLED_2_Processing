@@ -1,7 +1,7 @@
 /******************************************************
 //Some crazy colours and patterns using FastLED palettes
 //and some random bits of code from the interwebs
-//built to working with Marc Miller's arduino to processing v10
+//built to work with Marc Miller's arduino to processing v10
 //Processing sketch (modified for POV display). Using Arduino 1.0.6 and Processing 2.2.1
 //starts off slow wait for the good bits coming later
 //this is just a testing sketch so don't expect any code to make sense
