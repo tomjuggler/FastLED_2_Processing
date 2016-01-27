@@ -93,7 +93,7 @@ void setup() {
   println (" ");
 
   // Serial port to be used.  Change number in [brackets] as needed.
-  String portName = "/dev/ttyACM0";
+  String portName = "/dev/ttyUSB1"; // "/dev/ttyUSB0" for Nano, "/dev/ttyACM0" for Uno
   //String portName = Serial.list()[0]; // <--- *port number*
   // - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - -
 
