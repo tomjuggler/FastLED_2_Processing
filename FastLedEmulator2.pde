@@ -93,7 +93,7 @@ void setup() {
   println (" ");
 
   // Serial port to be used.  Change number in [brackets] as needed.
-  String portName = "/dev/ttyUSB1"; // "/dev/ttyUSB0" for Nano, "/dev/ttyACM0" for Uno
+  String portName = "/dev/ttyUSB0"; // "/dev/ttyUSB0" for Nano, "/dev/ttyACM0" for Uno
   //String portName = Serial.list()[0]; // <--- *port number*
   // - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - -
 
@@ -293,7 +293,7 @@ void serialEvent(Serial myPort) {
             println("  NUM_LEDS = " + NUM_LEDS + ", and number of pixels sent by MCU = " + receivedNUM_LEDS + ".");
             println("                          Processing halted.");
             println("**********************************************************************");
-            exit();  // Exit the program.
+//            exit();  // Exit the program.
           }
         }
         else {  // NUM_LEDS matches what MCU is sending.  Continue on.
