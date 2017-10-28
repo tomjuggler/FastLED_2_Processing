@@ -35,7 +35,7 @@ String     layout = "P";    // Pixel layout: [H]orizontal, [V]ertical, [M]atrix,
 String  direction = "F";    // Numbering direction: [F]orward or [R]everse.
 
 // *** Additional variables for Matrix layout only. ***
-int numberColumns = 37;      // Number of pixels across.
+int numberColumns = 37;      // Number of pixels across.        
 int    numberRows = 1;      // Number of pixels vertically.
 String  scanStart = "T";    // Matrix scan starts from: [T]op or [B]ottom.
 String       path = "Z";    // Path type: [Z]igzag or [S]erpintine.
@@ -93,7 +93,7 @@ void setup() {
   println (" ");
 
   // Serial port to be used.  Change number in [brackets] as needed.
-  String portName = "/dev/ttyUSB0"; // "/dev/ttyUSB0" for Nano, "/dev/ttyACM0" for Uno
+  String portName = "/dev/ttyUSB1"; // "/dev/ttyUSB0" for Nano, "/dev/ttyACM0" for Uno
   //String portName = Serial.list()[0]; // <--- *port number*
   // - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - -
 
@@ -374,9 +374,9 @@ void serialEvent(Serial myPort) {
 
       for (int p=0; p < NUM_LEDS; p++) {  // Loop over pixels
         // Find pixel's R,G,B values.
-        redChan   = serialArray[(4*p)+1];  // Red value. 
-        greenChan = serialArray[(4*p)+2];  // Green value.
-        blueChan  = serialArray[(4*p)+3];  // Blue value.
+        redChan   = serialArray[(4*p)+3];  // Red value. 
+        greenChan = serialArray[(4*p)+1];  // Green value.
+        blueChan  = serialArray[(4*p)+2];  // Blue value.
         if (testing == true) {  // Print values for debugging
           print("  pixelNumber " + p);
           println("\t\t redChan " + redChan + "\t greenChan " + greenChan + "\t blueChan " + blueChan);
