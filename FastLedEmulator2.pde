@@ -93,9 +93,9 @@ void setup() {
   println (" ");
 
   // Serial port to be used.  Change number in [brackets] as needed.
-  String portName = "/dev/ttyUSB0"; // "/dev/ttyUSB0" for Nano, "/dev/ttyACM0" for Uno
+  String portName = "/dev/ttyUSB1"; // "/dev/ttyUSB0" for Nano, "/dev/ttyACM0" for Uno
   //String portName = Serial.list()[0]; // <--- *port number*
-  // - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - -
+  // - - - - - - - - - - - - - - - -  - -  - - - - - - - - - - - -
 
 
   myPort = new Serial(this, portName, 115200);  // Create the serial port.
