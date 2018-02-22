@@ -66,8 +66,8 @@ boolean firstContact = false;  // Whether we've heard from the microcontroller. 
 int stageMin = 140;            // Minimum stage size.
 int stageW = stageMin;         // Initial stage width for draw area.
 int stageH = stageMin;         // Initial stage height for draw area.
-int pixelSize = 18;            // Width and height of a pixel.
-int offset = 18;               // Pixel spacing (measured from pixel center to center).
+int pixelSize = 6;            // Width and height of a pixel.
+int offset = 6;               // Pixel spacing (measured from pixel center to center).
 float xpos, ypos;              // X and Y pixel position in the draw area.
 float dx,dy = 0;               // X and Y delta from the stage center in circular layouts.
 int cCount = 0;                // Used to keep track of column while drawing pixel matrix.
@@ -97,7 +97,7 @@ void setup() {
   println (" ");
 
   // Serial port to be used.  Change number in [brackets] as needed.
-  String portName = "/dev/ttyUSB0"; // "/dev/ttyUSB0" for Nano, "/dev/ttyACM0" for Uno
+  String portName = "/dev/ttyUSB1"; // "/dev/ttyUSB0" for Nano, "/dev/ttyACM0" for Uno
   //String portName = Serial.list()[0]; // <--- *port number*
   // - - - - - - - - - - - - - - - -  - -  - - - - - - - - - - - -
 
@@ -378,14 +378,20 @@ void serialEvent(Serial myPort) {
 
       for (int p=0; p < NUM_LEDS; p++) {  // Loop over pixels
         // Find pixel's R,G,B values.
-        redChan   = serialArray[(4*p)+3];  // Red value. 
+        redChan   = serialArray[(4*p)+2];  // Red value. 
         greenChan = serialArray[(4*p)+1];  // Green value.
-        blueChan  = serialArray[(4*p)+2];  // Blue value.
+        blueChan  = serialArray[(4*p)+3];  // Blue value.
         if (testing == true) {  // Print values for debugging
           print("  pixelNumber " + p);
           println("\t\t redChan " + redChan + "\t greenChan " + greenChan + "\t blueChan " + blueChan);
         }
-        colorMode(RGB, 255);                     // Specify color mode, using range from 0-255.
+        colorMode(RGB);                     // Specify color mode, using range from 0-255.
+        if(redChan > 0){
+          redChan = redChan*2;
+          if(redChan > 255){
+            redChan = 255;
+          }
+        }
         fill(redChan,greenChan,blueChan);        // Set fill color based on the RGB data we received.
 
         if (layout == "C") {  // Draw circular pixels.
@@ -439,6 +445,7 @@ void serialEvent(Serial myPort) {
           //println("    xpos: " + xpos + "    ypos: " + ypos);
           cCount++;  // Increment column counter.
           if ((cCount+(rCount*numberFlashes)) == totalPixels) {  // If matrix is larger then NUM_LEDS, only draw actual pixels.
+//          background(0);
             cCount = 0;
             rCount = 0;
           }
@@ -461,15 +468,23 @@ void serialEvent(Serial myPort) {
         
           
           
-        incrRotation++;
-        if(incrRotation > 360){
-         incrRotation = 0; 
-        }
+//        incrRotation++;
+//        if(incrRotation > 360){
+//         incrRotation = 0; 
+//        }
 //          incrRotation = cCount+(rCount*numberFlashes);
           adjacent = int((xpos) * sin(radians(-ypos+incrRotation)));      
           opposite = int((xpos) * cos(radians(-ypos+incrRotation)));
-          rect(adjacent+height/2, opposite+width/2, 5, 5);
+          rect(adjacent+height/2, opposite+width/2, pixelSize, pixelSize);
+//          rect(xpos+height/2, ypos+width/2, 5, 5);
       }//end of looping over pixels
+      incrRotation++;
+        if(incrRotation > 360){
+         incrRotation = 0; 
+        }
+//       adjacent = int((xpos) * sin(radians(-ypos+incrRotation)));      
+//          opposite = int((xpos) * cos(radians(-ypos+incrRotation)));
+//          rect(adjacent+height/2, opposite+width/2, 10, 10);
       serialCount = 0;  // Reset serial count before receiving more data.
       myPort.clear();   // Clear the serial port buffer.
     } 
