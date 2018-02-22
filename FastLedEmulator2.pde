@@ -82,6 +82,10 @@ int greenChan;                 // Pixel's green value (0-255)
 int blueChan;                  // Pixel's blue value (0-255)
 //==============================================================================
 
+//circleMode:
+    int opposite = 0;
+    int adjacent = 0;
+    int incrRotation = 0;    
 
 //------------------------------------------------------------------------------
 void setup() {
@@ -93,7 +97,7 @@ void setup() {
   println (" ");
 
   // Serial port to be used.  Change number in [brackets] as needed.
-  String portName = "/dev/ttyUSB1"; // "/dev/ttyUSB0" for Nano, "/dev/ttyACM0" for Uno
+  String portName = "/dev/ttyUSB0"; // "/dev/ttyUSB0" for Nano, "/dev/ttyACM0" for Uno
   //String portName = Serial.list()[0]; // <--- *port number*
   // - - - - - - - - - - - - - - - -  - -  - - - - - - - - - - - -
 
@@ -422,8 +426,14 @@ void serialEvent(Serial myPort) {
         
         if (layout == "P") {
           int totalPixels = NUM_LEDS*numberFlashes; //need to make totalPixels global var...
-          ypos = (float(stageW)/2.0) - (dir*float((numberFlashes-1))/2.0*offset) + (dir*offset*cCount);
-          xpos = (float(stageH)/2.0) - (dirM*float((NUM_LEDS-1))/2.0*offset) + (dirM*offset*rCount);
+//          ypos = (float(stageW)/2.0) - (dir*float((numberFlashes-1))/2.0*offset) + (dir*offset*cCount);
+//          xpos = (float(stageH)/2.0) - (dirM*float((NUM_LEDS-1))/2.0*offset) + (dirM*offset*rCount);
+          
+          dx = r * cos(radians(degrees));
+          
+          xpos = (float(stageW)/2.0)+dx - (dir*float((numberFlashes-1))/2.0*offset) + (dir*offset*cCount);  // x postion from center stage.
+          
+          
           //print("    cCount: " + cCount + "    rCount: " + rCount);
           //print("    "+(cCount+1)+"+"+(rCount*numberColumns)+"="+(cCount+1+(rCount*numberColumns)));
           //println("    xpos: " + xpos + "    ypos: " + ypos);
@@ -436,13 +446,29 @@ void serialEvent(Serial myPort) {
             cCount = 0;  // Reset column counter.
             rCount++;  // Increment to move to next row.
             if (rCount == NUM_LEDS) { rCount = 0; }  // Reset to zero.
+            dy = dir * r * sin(radians(degrees));
+//            ypos = (float(stageW)/2.0) - (dir*float((numberFlashes-1))/2.0*offset) + (dir*offset*cCount);
+            ypos = (float(stageH)/2.0)+dy - (dir*float((numberFlashes-1))/2.0*offset) + (dir*offset*cCount);  // y postion from center stage.
+            degrees = degrees - (360.0 / NUM_LEDS);  // Rotate to next position around the circle.
           }
         }
-
+          
         // Draw the pixel!
-        rect(xpos,ypos,pixelSize,pixelSize);  // center x, center y, width, height
+//        rect(xpos,ypos,pixelSize,pixelSize);  // center x, center y, width, height
         //ellipse(xpos,ypos,pixelSize,pixelSize);  // center x, center y, width, height
-      
+        
+        /////////////circle mode!!!!:
+        
+          
+          
+        incrRotation++;
+        if(incrRotation > 360){
+         incrRotation = 0; 
+        }
+//          incrRotation = cCount+(rCount*numberFlashes);
+          adjacent = int((xpos) * sin(radians(-ypos+incrRotation)));      
+          opposite = int((xpos) * cos(radians(-ypos+incrRotation)));
+          rect(adjacent+height/2, opposite+width/2, 5, 5);
       }//end of looping over pixels
       serialCount = 0;  // Reset serial count before receiving more data.
       myPort.clear();   // Clear the serial port buffer.
