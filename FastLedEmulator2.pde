@@ -122,8 +122,10 @@ void setup() {
     stageH = (numberRows + 1) * offset;  // height of stage draw area.
   }
   if (layout == "P") {
-    stageW  = (numberFlashes + 1) * offset;  // width of stage draw area.
-    stageH = (NUM_LEDS + 1) * offset;  // height of stage draw area.
+    stageW  = (numberFlashes + 1) * offset + 20;  // width of stage draw area.
+    stageH = (NUM_LEDS + 1) * offset + 20;  // height of stage draw area.
+//     stageW = int(float((210 * NUM_LEDS)/6) + float(1800/6));  // width of stage draw area.
+//    stageH = stageW;  // Make the stage square for circles.
   }
   if (stageW < stageMin) { stageW = stageMin; }  // Force at least a minimum stage width.
   if (stageH < stageMin) { stageH = stageMin; }  // Force at least a minimum stage height.
@@ -133,7 +135,7 @@ void setup() {
   smooth();               // Use anti-aliasing.
   noStroke();             // No border when drawing shapes.
   //colorMode(RGB, 255);  // Use Red, Green, Blue color mode.  Range from 0-255.
-  colorMode(HSB, 255);    // Use Hue, Saturation, Brightness color mode.  Range from 0-255.
+  colorMode(RGB, 255);    // Use Hue, Saturation, Brightness color mode.  Range from 0-255.
   rectMode(CENTER);       // Rectangles are positioned based on their center.
   ellipseMode(CENTER);    // Ellipses are positioned based on their center.
 
@@ -378,14 +380,15 @@ void serialEvent(Serial myPort) {
 
       for (int p=0; p < NUM_LEDS; p++) {  // Loop over pixels
         // Find pixel's R,G,B values.
-        redChan   = serialArray[(4*p)+2];  // Red value. 
+        redChan   = serialArray[(4*p)+0];  // Red value. 
         greenChan = serialArray[(4*p)+1];  // Green value.
-        blueChan  = serialArray[(4*p)+3];  // Blue value.
+        blueChan  = serialArray[(4*p)+2];  // Blue value.
         if (testing == true) {  // Print values for debugging
           print("  pixelNumber " + p);
           println("\t\t redChan " + redChan + "\t greenChan " + greenChan + "\t blueChan " + blueChan);
         }
-        colorMode(RGB);                     // Specify color mode, using range from 0-255.
+        colorMode(RGB, 255);                     // Specify color mode, using range from 0-255.
+        
         if(redChan > 0){
           redChan = redChan*2;
           if(redChan > 255){
