@@ -122,15 +122,15 @@ void setup() {
     stageH = (numberRows + 1) * offset;  // height of stage draw area.
   }
   if (layout == "P") {
-    stageW  = (numberFlashes + 1) * offset + 20;  // width of stage draw area.
-    stageH = (NUM_LEDS + 1) * offset + 20;  // height of stage draw area.
+    stageW  = (numberFlashes + 1) * (offset + 2) + 250;  // width of stage draw area.
+    stageH = (NUM_LEDS + 1) * (offset + 2) + 250;  // height of stage draw area.
 //     stageW = int(float((210 * NUM_LEDS)/6) + float(1800/6));  // width of stage draw area.
 //    stageH = stageW;  // Make the stage square for circles.
   }
   if (stageW < stageMin) { stageW = stageMin; }  // Force at least a minimum stage width.
   if (stageH < stageMin) { stageH = stageMin; }  // Force at least a minimum stage height.
 
-  size(stageW,stageH);    // Set the stage size.
+  size(stageW+250,stageH + 250);    // Set the stage size.
   background(bgcolor);    // Set stage bg color. 
   smooth();               // Use anti-aliasing.
   noStroke();             // No border when drawing shapes.
@@ -478,7 +478,7 @@ void serialEvent(Serial myPort) {
 //          incrRotation = cCount+(rCount*numberFlashes);
           adjacent = int((xpos) * sin(radians(-ypos+incrRotation)));      
           opposite = int((xpos) * cos(radians(-ypos+incrRotation)));
-          rect(adjacent+height/2, opposite+width/2, pixelSize, pixelSize);
+          ellipse(adjacent+height/2, opposite+width/2, pixelSize, pixelSize);
 //          rect(xpos+height/2, ypos+width/2, 5, 5);
       }//end of looping over pixels
       incrRotation++;
