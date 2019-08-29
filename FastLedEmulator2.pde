@@ -85,6 +85,8 @@ int blueChan;                  // Pixel's blue value (0-255)
 //circleMode:
     int opposite = 0;
     int adjacent = 0;
+    int opposite2 = 0;
+int adjacent2 = 0;
     int incrRotation = 0;    
 
 //------------------------------------------------------------------------------
@@ -97,7 +99,7 @@ void setup() {
   println (" ");
 
   // Serial port to be used.  Change number in [brackets] as needed.
-  String portName = "/dev/ttyUSB1"; // "/dev/ttyUSB0" for Nano, "/dev/ttyACM0" for Uno
+  String portName = "/dev/ttyUSB0"; // "/dev/ttyUSB0" for Nano, "/dev/ttyACM0" for Uno
   //String portName = Serial.list()[0]; // <--- *port number*
   // - - - - - - - - - - - - - - - -  - -  - - - - - - - - - - - -
 
@@ -378,6 +380,9 @@ void serialEvent(Serial myPort) {
     if (serialCount == (NUM_LEDS*4)) {  // True when we have all the data for the LED strip.
       if (testing == true) { println("--------------------------------------------------------------------------------"); }  // Print when debugging
 
+//from here, try iterating over pixels in resized .jpg instead: 
+//for offline version...
+
       for (int p=0; p < NUM_LEDS; p++) {  // Loop over pixels
         // Find pixel's R,G,B values.
         redChan   = serialArray[(4*p)+0];  // Red value. 
@@ -476,9 +481,34 @@ void serialEvent(Serial myPort) {
 //         incrRotation = 0; 
 //        }
 //          incrRotation = cCount+(rCount*numberFlashes);
-          adjacent = int((xpos) * sin(radians(-ypos+incrRotation)));      
-          opposite = int((xpos) * cos(radians(-ypos+incrRotation)));
-          ellipse(adjacent+height/2, opposite+width/2, pixelSize, pixelSize);
+         adjacent = int((xpos) * sin(radians(ypos+incrRotation)));      
+      opposite = int((xpos) * cos(radians(ypos+incrRotation)));
+/*
+   //CLEAR THE PATH:
+      adjacent2 = int((xpos) * sin(radians(ypos+(incrRotation-2))));      
+      opposite2 = int((xpos) * cos(radians(ypos+(incrRotation-2))));
+//      stroke(0);
+      fill(0);
+      rect(adjacent2+height/2, opposite2+width/2, pixelSize+2, pixelSize+2);
+  */    
+      //CLEAR THE PATH MORE:
+      adjacent2 = int((xpos) * sin(radians(ypos+(incrRotation+3))));      
+      opposite2 = int((xpos) * cos(radians(ypos+(incrRotation+3))));
+//      stroke(0);
+      fill(0);
+      rect(adjacent2+height/2, opposite2+width/2, pixelSize+3, pixelSize+3);
+      /*
+      //CLEAR THE PATH MORE:
+      adjacent2 = int((xpos) * sin(radians(ypos+(incrRotation-1))));      
+      opposite2 = int((xpos) * cos(radians(ypos+(incrRotation-1))));
+//      stroke(0);
+      fill(0);
+      ellipse(adjacent2+height/2, opposite2+width/2, pixelSize, pixelSize);
+    //BACK TO NORMAL:
+//      stroke(Chan);
+*/
+      fill(redChan,greenChan,blueChan);
+      ellipse(adjacent+height/2, opposite+width/2, pixelSize, pixelSize);
 //          rect(xpos+height/2, ypos+width/2, 5, 5);
       }//end of looping over pixels
       incrRotation++;
