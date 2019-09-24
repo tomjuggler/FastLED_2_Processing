@@ -30,12 +30,12 @@ import processing.serial.*;
 //------------------------------------------------------------------------------
 //==============================================================================
 // *** User variables.  Change as needed to match your setup. ***
-int      NUM_LEDS = 37;     // Number of pixels in strip.
+int      NUM_LEDS = 36;     // Number of pixels in strip.
 String     layout = "P";    // Pixel layout: [H]orizontal, [V]ertical, [M]atrix, [C]ircular, or[P]OV.
 String  direction = "F";    // Numbering direction: [F]orward or [R]everse.
 
 // *** Additional variables for Matrix layout only. ***
-int numberColumns = 37;      // Number of pixels across.        
+int numberColumns = 36;      // Number of pixels across.        
 int    numberRows = 1;      // Number of pixels vertically.
 String  scanStart = "T";    // Matrix scan starts from: [T]op or [B]ottom.
 String       path = "Z";    // Path type: [Z]igzag or [S]erpintine.
@@ -46,7 +46,7 @@ boolean testing_verbose = false;  // Verbose detail. Shows incoming data.  [defa
 boolean checkNUM_LEDS = true;  // Force check of NUM_LEDS vs pixels from MCU. [default: true]
 
 // *** Additional variables for POV layout only. ***
-int numberFlashes = 37;
+int numberFlashes = 36;
 
 // End of user variables.
 //==============================================================================
@@ -394,12 +394,16 @@ void serialEvent(Serial myPort) {
         }
         colorMode(RGB, 255);                     // Specify color mode, using range from 0-255.
         
-        if(redChan > 0){
-          redChan = redChan*2;
-          if(redChan > 255){
-            redChan = 255;
-          }
-        }
+//        if(redChan > 0){
+//          redChan = redChan*2;
+//          if(redChan > 255){
+//            redChan = 255;
+//          }
+//        }
+//        if(blueChan == 255){
+//          blueChan = 0;
+//        }
+        
         fill(redChan,greenChan,blueChan);        // Set fill color based on the RGB data we received.
 
         if (layout == "C") {  // Draw circular pixels.
