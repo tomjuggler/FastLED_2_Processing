@@ -1,11 +1,11 @@
 /*==============================================================================
-  test_serial_from_arduino_v10.pde
+  adapted from original by
   Marc Miller,  April 2015
 
 ================================================================================
   This Processing program receives pixel data from an Arduino sketch running
   FastLED.  An Arduino demo sketch can be used to test it out:
-    arduino_to_processing_v10.ino
+    FastLEDColourPaletteNanoEmulatorVersion.ino - also works with SmartPoiBasicStreaming.ino
 
   There are several user changeable variables to allow Processing to draw
   a pixel setup similar to what your physical pixel arrangement looks like,
@@ -15,7 +15,7 @@
   To use, first upload the Arduino sketch to your controler board.  Then
   enter the number of pixels in your LED strip and run.  Processing will
   connect to the Arduino and receive the pixel data, drawing a simulated
-  LED strip.
+  LED strip (update: now showing POV Poi version).
 
   Note: Besides the user variables, another variable that might need to be
   changed is the port number for the serial connection.  Change the number
