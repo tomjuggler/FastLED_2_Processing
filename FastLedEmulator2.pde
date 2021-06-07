@@ -66,7 +66,7 @@ boolean firstContact = false;  // Whether we've heard from the microcontroller. 
 int stageMin = 140;            // Minimum stage size.
 int stageW = stageMin;         // Initial stage width for draw area.
 int stageH = stageMin;         // Initial stage height for draw area.
-int pixelSize = 6;            // Width and height of a pixel.
+int pixelSize = 3;            // Width and height of a pixel.
 int offset = 6;               // Pixel spacing (measured from pixel center to center).
 float xpos, ypos;              // X and Y pixel position in the draw area.
 float dx,dy = 0;               // X and Y delta from the stage center in circular layouts.
@@ -383,7 +383,7 @@ void serialEvent(Serial myPort) {
 //from here, try iterating over pixels in resized .jpg instead: 
 //for offline version...
 
-      for (int p=0; p < NUM_LEDS; p++) {  // Loop over pixels
+      for (int p=NUM_LEDS-1; p >-1 ; p--) {  // Loop over pixels
         // Find pixel's R,G,B values.
         redChan   = serialArray[(4*p)+0];  // Red value. 
         greenChan = serialArray[(4*p)+1];  // Green value.
@@ -404,7 +404,7 @@ void serialEvent(Serial myPort) {
 //          blueChan = 0;
 //        }
         
-        fill(redChan,greenChan,blueChan);        // Set fill color based on the RGB data we received.
+        fill(greenChan,blueChan,redChan);        // Set fill color based on the RGB data we received.
 
         if (layout == "C") {  // Draw circular pixels.
           dx = r * cos(radians(degrees));
@@ -511,8 +511,10 @@ void serialEvent(Serial myPort) {
     //BACK TO NORMAL:
 //      stroke(Chan);
 */
-      fill(redChan,greenChan,blueChan);
+      fill(greenChan,blueChan,redChan);
       ellipse(adjacent+height/2, opposite+width/2, pixelSize, pixelSize);
+      
+
 //          rect(xpos+height/2, ypos+width/2, 5, 5);
       }//end of looping over pixels
       incrRotation++;
